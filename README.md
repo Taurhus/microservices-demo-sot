@@ -36,5 +36,50 @@ This solution demonstrates a modern microservices-based architecture inspired by
 - See each service's README for local run instructions.
 - Use `docker-compose up` to start the full stack.
 
+## Running the integration tests
+
+1. Start the Docker Compose stack from the repository root. This will launch the database, message broker, and all services:
+
+```powershell
+docker-compose up --build -d
+```
+
+2. The test project expects each service to be reachable on specific host ports mapped by the compose file (the defaults used by the tests are listed below). Tests include a startup wait helper that probes these ports and will fail early with a helpful message if services are not available within 30s.
+
+Default ports used by the tests (host):
+
+- Player: 5001
+- Ship: 5002
+- Quest: 5003
+- Faction: 5004
+- Event: 5005
+- Item: 5006
+- Location: 5007
+- Shop: 5008
+
+3. Run the tests from the repo root:
+
+```powershell
+dotnet test src/MicroservicesDemoSot.Tests/MicroservicesDemoSot.Tests.csproj --logger "console;verbosity=detailed"
+```
+
+If a test run fails because a service did not start in time, check container logs and re-run after services report they are "Application started".
+
+4. Optional: If you want to re-run only the integration tests quickly while developing, you can use the `--filter` flag with `dotnet test` to run a subset.
+
+Environment variables that control the test startup wait fixture
+
+- `SERVICE_WAIT_TIMEOUT_SECONDS` — number of seconds to wait per service before giving up (default: 30).
+- `SERVICE_PORTS` — comma-separated list of host:port entries to probe (default: `127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003,127.0.0.1:5004,127.0.0.1:5005,127.0.0.1:5006,127.0.0.1:5007,127.0.0.1:5008`).
+
+Example (PowerShell):
+
+```powershell
+$env:SERVICE_WAIT_TIMEOUT_SECONDS = "60"
+$env:SERVICE_PORTS = "127.0.0.1:5001,127.0.0.1:5002,127.0.0.1:5003"
+dotnet test src/MicroservicesDemoSot.Tests/MicroservicesDemoSot.Tests.csproj
+```
+
+
 ---
 This project is for demonstration and educational purposes only.

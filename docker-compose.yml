@@ -1,7 +1,7 @@
 
 services:
   player-service:
-    build: ./PlayerService
+    build: ./src/PlayerService
     ports:
       - "5001:8080"
     environment:
@@ -10,7 +10,7 @@ services:
       - rabbitmq
       - azuresql
   ship-service:
-    build: ./ShipService
+    build: ./src/ShipService
     ports:
       - "5002:8080"
     environment:
@@ -19,7 +19,7 @@ services:
       - rabbitmq
       - azuresql
   quest-service:
-    build: ./QuestService
+    build: ./src/QuestService
     ports:
       - "5003:8080"
     environment:
@@ -28,7 +28,7 @@ services:
       - rabbitmq
       - azuresql
   faction-service:
-    build: ./FactionService
+    build: ./src/FactionService
     ports:
       - "5004:8080"
     environment:
@@ -37,7 +37,7 @@ services:
       - rabbitmq
       - azuresql
   event-service:
-    build: ./EventService
+    build: ./src/EventService
     ports:
       - "5005:8080"
     environment:
@@ -46,7 +46,7 @@ services:
       - rabbitmq
       - azuresql
   item-service:
-    build: ./ItemService
+    build: ./src/ItemService
     ports:
       - "5006:8080"
     environment:
@@ -55,7 +55,7 @@ services:
       - rabbitmq
       - azuresql
   location-service:
-    build: ./LocationService
+    build: ./src/LocationService
     ports:
       - "5007:8080"
     environment:
@@ -64,7 +64,7 @@ services:
       - rabbitmq
       - azuresql
   shop-service:
-    build: ./ShopService
+    build: ./src/ShopService
     ports:
       - "5008:8080"
     environment:

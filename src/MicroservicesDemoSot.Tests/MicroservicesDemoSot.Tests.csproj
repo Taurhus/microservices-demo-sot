@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.5.6" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EventService\EventService.csproj" />
+    <ProjectReference Include="..\FactionService\FactionService.csproj" />
+    <ProjectReference Include="..\ItemService\ItemService.csproj" />
+    <ProjectReference Include="..\LocationService\LocationService.csproj" />
+    <ProjectReference Include="..\PlayerService\PlayerService.csproj" />
+    <ProjectReference Include="..\QuestService\QuestService.csproj" />
+    <ProjectReference Include="..\ShipService\ShipService.csproj" />
+    <ProjectReference Include="..\ShopService\ShopService.csproj" />
+  </ItemGroup>
+
+</Project>

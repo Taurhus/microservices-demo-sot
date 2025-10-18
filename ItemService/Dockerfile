@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["ItemService.csproj", "."]
+RUN dotnet restore "ItemService.csproj"
+COPY . .
+RUN dotnet publish "ItemService.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "ItemService.dll"]

@@ -3,7 +3,7 @@
 This service manages in-game locations for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for locations via `/api/location`
+- CRUD for locations via `/api/locations`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

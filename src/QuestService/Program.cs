@@ -1,119 +1,80 @@
 using QuestService.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
-using Microsoft.Data.SqlClient;
+using Shared.Infrastructure;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure services
 builder.Services.AddDbContext<QuestDb>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Server=azuresql;Database=QuestDb;User Id=sa;Password=Your_password123;TrustServerCertificate=True;"));
-    builder.Services.AddControllers();
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection") 
+        ?? "Server=azuresql;Database=QuestDb;User Id=sa;Password=Your_password123;TrustServerCertificate=True;"));
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "Quest Service API", Version = "v1" });
+});
+
+// Add RabbitMQ messaging
+builder.Services.AddRabbitMQMessaging();
+
+// Add transactional messaging (outbox pattern)
+builder.Services.AddTransactionalMessaging<QuestDb>();
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<QuestDb>();
+
+// Add response compression
+builder.Services.AddResponseCompression();
+
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 
-app.UseRouting();
-app.UseAuthorization();
-app.MapControllers();
-
-// Apply migrations at startup with wait/retry for DB connectivity
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<QuestDb>();
-    var maxRetries = 10;
-    var delayMs = 3000;
-    var retries = 0;
-    bool dbReady = false;
-    string dbName = "QuestDb";
-    string masterConnStr = "Server=azuresql;Database=master;User Id=sa;Password=Your_password123;TrustServerCertificate=True;";
-    while (retries < maxRetries && !dbReady)
-    {
-        try
-        {
-            dbReady = db.Database.CanConnect();
-        }
-        catch
-        {
-            dbReady = false;
-        }
-        if (!dbReady)
-        {
-            retries++;
-            Console.WriteLine($"Waiting for database... attempt {retries}/{maxRetries}");
-            Thread.Sleep(delayMs);
-        }
-    }
-    if (!dbReady)
-    {
-        // Try to create the database from master if it does not exist
-        try
-        {
-            Console.WriteLine($"Database '{dbName}' does not exist or is not accessible. Attempting to create from master...");
-            using (var masterConn = new SqlConnection(masterConnStr))
-            {
-                masterConn.Open();
-                using (var cmd = masterConn.CreateCommand())
-                {
-                    cmd.CommandText = $"CREATE DATABASE [{dbName}];";
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex) when (ex.Number == 1801)
-                    {
-                        // Database already exists, safe to ignore
-                    }
-                }
-            }
-            // Now try to connect again, with retry to ensure DB is fully online
-            var postCreateRetries = 10;
-            var postCreateDelayMs = 2000;
-            dbReady = false;
-            for (int i = 0; i < postCreateRetries; i++)
-            {
-                try
-                {
-                    dbReady = db.Database.CanConnect();
-                    if (dbReady) break;
-                }
-                catch { dbReady = false; }
-                Thread.Sleep(postCreateDelayMs);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Database creation from master failed: {ex.Message}");
-            throw new Exception("Could not connect or create the database after multiple attempts.");
-        }
-    }
-    // Ensure schema is up to date
-    db.Database.Migrate();
-}
+// Configure pipeline
+app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
-    // Redirect root to Swagger UI
-    app.Use(async (context, next) => {
-        if (context.Request.Path == "/")
-        {
-            context.Response.Redirect("/swagger");
-            return;
-        }
-        await next();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quest Service API v1");
+        c.RoutePrefix = string.Empty;
     });
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
+app.MapHealthChecks("/health");
 
-// CRUD Endpoints for Quest
+// Initialize database asynchronously
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+try
+{
+    await DatabaseInitializer.InitializeDatabaseAsync<QuestDb>(
+        app.Services, 
+        "QuestDb", 
+        logger);
+}
+catch (Exception ex)
+{
+    logger.LogError(ex, "Failed to initialize database");
+    throw;
+}
 
+logger.LogInformation("QuestService started successfully");
 app.Run();
-
-
-
-

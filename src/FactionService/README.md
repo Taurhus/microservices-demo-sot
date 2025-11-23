@@ -3,7 +3,7 @@
 This service manages player factions for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for factions via `/api/faction`
+- CRUD for factions via `/api/factions`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

@@ -3,7 +3,7 @@
 This service manages in-game items for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for items via `/api/item`
+- CRUD for items via `/api/items`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

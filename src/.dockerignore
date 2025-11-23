@@ -1,0 +1,16 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/node_modules
+**/.dockerignore
+**/Dockerfile
+**/*.md
+**/README.md
+**/*.http
+**/appsettings.Development.json
+**/DesignTimeDbContextFactory.cs
+**/*.Tests
+**/MicroservicesDemoSot.Tests
+

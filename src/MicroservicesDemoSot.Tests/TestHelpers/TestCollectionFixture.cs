@@ -32,17 +32,11 @@ namespace MicroservicesDemoSot.Tests.TestHelpers
 
         private async Task WaitForServices()
         {
-            // Default services (host:port) used by the tests. This can be overridden by the SERVICE_PORTS env var.
+            // All tests now use the API Gateway instead of calling services directly.
+            // This can be overridden by the SERVICE_PORTS env var.
             var defaults = new string[]
             {
-                "127.0.0.1:5001", // Player
-                "127.0.0.1:5002", // Ship
-                "127.0.0.1:5003", // Quest
-                "127.0.0.1:5004", // Faction
-                "127.0.0.1:5005", // Event
-                "127.0.0.1:5006", // Item
-                "127.0.0.1:5007", // Location
-                "127.0.0.1:5008", // Shop
+                "127.0.0.1:5000", // API Gateway (routes to all services)
             };
 
             var env = Environment.GetEnvironmentVariable("SERVICE_PORTS");

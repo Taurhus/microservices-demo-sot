@@ -3,7 +3,7 @@
 This service manages in-game shops for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for shops via `/api/shop`
+- CRUD for shops via `/api/shops`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

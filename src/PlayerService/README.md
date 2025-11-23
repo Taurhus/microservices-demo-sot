@@ -3,7 +3,7 @@
 This service manages player data for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for players via `/api/player`
+- CRUD for players via `/api/players`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

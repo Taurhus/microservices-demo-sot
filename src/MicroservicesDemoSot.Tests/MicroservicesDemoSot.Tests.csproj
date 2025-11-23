@@ -13,12 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AchievementService\AchievementService.csproj" />
+    <ProjectReference Include="..\CrewService\CrewService.csproj" />
+    <ProjectReference Include="..\EmissaryService\EmissaryService.csproj" />
     <ProjectReference Include="..\EventService\EventService.csproj" />
     <ProjectReference Include="..\FactionService\FactionService.csproj" />
     <ProjectReference Include="..\ItemService\ItemService.csproj" />
     <ProjectReference Include="..\LocationService\LocationService.csproj" />
     <ProjectReference Include="..\PlayerService\PlayerService.csproj" />
     <ProjectReference Include="..\QuestService\QuestService.csproj" />
+    <ProjectReference Include="..\ReputationService\ReputationService.csproj" />
     <ProjectReference Include="..\ShipService\ShipService.csproj" />
     <ProjectReference Include="..\ShopService\ShopService.csproj" />
   </ItemGroup>

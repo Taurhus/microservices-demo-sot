@@ -3,7 +3,7 @@
 This service manages quests for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for quests via `/api/quest`
+- CRUD for quests via `/api/quests`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

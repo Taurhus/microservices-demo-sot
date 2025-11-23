@@ -3,7 +3,7 @@
 This service manages ships for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for ships via `/api/ship`
+- CRUD for ships via `/api/ships`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core

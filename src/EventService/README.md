@@ -3,7 +3,7 @@
 This service manages in-game events for the Sea of Thieves microservices demo.
 
 ## Endpoints
-- CRUD for events via `/api/event`
+- CRUD for events via `/api/events`
 
 ## Database
 - Uses Azure SQL (or compatible) via EF Core
